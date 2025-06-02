@@ -41,7 +41,8 @@ const modes = Object.freeze({
     MAJOR: 'Major',
     MINOR: 'Minor',
 });
-const firstNoteRanks = [ 0, 7, 4, 9, 2, 5, 11, 10, 3, 6, 1, 8 ];
+const firstNoteRanksMajor = [0, 7, 4, 9, 2, 5, 11, 10, 3, 6, 1, 8];
+const firstNoteRanksMinor = [9, 4, 0, 2, 7, 5, 10, 11, 3, 6, 1, 8];
 const context = new AudioContext();
 
 // Global Vars
@@ -86,10 +87,13 @@ function updateRankedNotes() {
     
     const keyOffset = pitchValues.findIndex(pitch => pitch === selectedPitch);
     while ($result.firstChild) $result.removeChild($result.lastChild);
+    const selectedMode = $modeSelect.value;
     if (previousNote == null) {
-        firstNoteRanks.forEach((firstNoteOffset, i) => $result.appendChild(createNoteButton((firstNoteOffset + keyOffset) % 12, i)));
+        const firstNoteRanks = selectedMode === modes.MAJOR ? firstNoteRanksMajor : firstNoteRanksMinor;
+        firstNoteRanks.forEach((firstNoteOffset, i) => {
+            $result.appendChild(createNoteButton((firstNoteOffset + keyOffset) % 12, i));
+        });
     } else {
-                const selectedMode = $modeSelect.value;
         const majorScale = [0, 2, 4, 5, 7, 9, 11];
         const minorScale = [0, 2, 3, 5, 7, 8, 10];
         const scaleOffsets = (selectedMode === modes.MAJOR ? majorScale : minorScale)
@@ -178,6 +182,7 @@ window.addEventListener('DOMContentLoaded', main);
 $submitButton.addEventListener('click', (event) => {
     event.preventDefault();
     if ($pitchSelect.value && $modeSelect.value) {
+        previousNote = null;
         updateRankedNotes();
     }
 });
