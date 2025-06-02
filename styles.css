@@ -13,6 +13,14 @@
     --pitch-B: #8e44ad;
 }
 
+html {
+    touch-action: manipulation;
+}
+
+button, input, select, label {
+    touch-action: manipulation;
+}
+
 body {
     margin: 0;
     padding: 2rem;
