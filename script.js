@@ -112,11 +112,12 @@ function updateRankedNotes() {
         const noteScores = Array.from({ length: 12 }, (_, noteOffset) => {
             const distance = fifthDistance(previousNote, noteOffset);
             const inKey = scaleOffsets.includes(noteOffset);
-            let score = 12 - distance;
+            let score = 12 - distance
 
             // Boost in-key notes, penalize out-of-key
             if (inKey) score += 3;
             else score -= 3;
+            if (noteOffset === previousNote) score -= 5;
 
             return { offset: noteOffset, score };
         });
