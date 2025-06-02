@@ -1,0 +1,114 @@
+:root {
+    --pitch-C: #e74c3c;
+    --pitch-D♭: #e67e22;
+    --pitch-D: #f1c40f;
+    --pitch-E♭: #2ecc71;
+    --pitch-E: #1abc9c;
+    --pitch-F: #3498db;
+    --pitch-G♭: #9b59b6;
+    --pitch-G: #34495e;
+    --pitch-A♭: #16a085;
+    --pitch-A: #27ae60;
+    --pitch-B♭: #2980b9;
+    --pitch-B: #8e44ad;
+}
+
+body {
+    margin: 0;
+    padding: 2rem;
+    font-family: Arial, sans-serif;
+    background: #f9f9f9;
+    color: #333;
+    transition: background 0.3s, color 0.3s;
+}
+
+form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+form label {
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+    font-size: 0.9rem;
+    flex: 1;
+}
+
+form select,
+form input[type="submit"] {
+    margin-top: 0.25rem;
+    padding: 0.4rem 0.6rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    transition: border 0.2s;
+}
+
+form select:focus,
+form input[type="submit"]:hover {
+    border-color: #333;
+}
+
+#result {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(3rem, 1fr));
+    gap: 0.75rem;
+}
+
+#result button {
+    position: relative;
+    padding: 0.6rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+#result button::after {
+    content: attr(data-key);
+    position: absolute;
+    bottom: 2px;
+    right: 4px;
+    font-size: 0.7rem;
+    opacity: 0.7;
+}
+
+#result button:hover {
+    transform: translateY(-2px);
+}
+
+/* Pitch-specific coloring */
+#result button[data-pitch="C"] { background: var(--pitch-C); }
+#result button[data-pitch="D♭"] { background: var(--pitch-D♭); }
+#result button[data-pitch="D"] { background: var(--pitch-D); }
+#result button[data-pitch="E♭"] { background: var(--pitch-E♭); }
+#result button[data-pitch="E"] { background: var(--pitch-E); }
+#result button[data-pitch="F"] { background: var(--pitch-F); }
+#result button[data-pitch="G♭"] { background: var(--pitch-G♭); }
+#result button[data-pitch="G"] { background: var(--pitch-G); }
+#result button[data-pitch="A♭"] { background: var(--pitch-A♭); }
+#result button[data-pitch="A"] { background: var(--pitch-A); }
+#result button[data-pitch="B♭"] { background: var(--pitch-B♭); }
+#result button[data-pitch="B"] { background: var(--pitch-B); }
+
+#ranks {
+    margin-top: 2rem;
+    font-size: 0.95rem;
+}
+
+#ranking-label {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    color: #555;
+}
