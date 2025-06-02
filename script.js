@@ -78,41 +78,45 @@ function populateSelect($select, values) {
 function updateRankedNotes() {
     noteListeners.forEach(noteListener => document.removeEventListener('keydown', noteListener));
 
-    /** @type {string | undefined} */
     const selectedPitch = $pitchSelect.value;
-    if (!selectedPitch) {
-        console.error('Pitch not selected');
+    const selectedMode = $modeSelect.value;
+    if (!selectedPitch || !selectedMode) {
+        console.error('Pitch or mode not selected');
         return;
     }
-    
+
     const keyOffset = pitchValues.findIndex(pitch => pitch === selectedPitch);
     while ($result.firstChild) $result.removeChild($result.lastChild);
-    const selectedMode = $modeSelect.value;
+
     if (previousNote == null) {
         const firstNoteRanks = selectedMode === modes.MAJOR ? firstNoteRanksMajor : firstNoteRanksMinor;
         firstNoteRanks.forEach((firstNoteOffset, i) => {
             $result.appendChild(createNoteButton((firstNoteOffset + keyOffset) % 12, i));
         });
     } else {
+        // Circle of fifths distance function
+        function fifthDistance(from, to) {
+            const fifth = n => (n * 7) % 12;
+            const fromFifth = fifth(from);
+            const toFifth = fifth(to);
+            const dist1 = (toFifth - fromFifth + 12) % 12;
+            const dist2 = (fromFifth - toFifth + 12) % 12;
+            return Math.min(dist1, dist2);
+        }
+
         const majorScale = [0, 2, 4, 5, 7, 9, 11];
         const minorScale = [0, 2, 3, 5, 7, 8, 10];
         const scaleOffsets = (selectedMode === modes.MAJOR ? majorScale : minorScale)
             .map(degree => (degree + keyOffset) % 12);
 
-        /** @type {{offset: number, score: number}[]} */
         const noteScores = Array.from({ length: 12 }, (_, noteOffset) => {
-            const interval = (noteOffset - previousNote + 12) % 12;
-            const inScale = scaleOffsets.includes(noteOffset);
-            const isStep = interval === 1 || interval === 11;
-            const isSmallInterval = interval >= 2 && interval <= 5;
-            const isLargeLeap = interval >= 6;
+            const distance = fifthDistance(previousNote, noteOffset);
+            const inKey = scaleOffsets.includes(noteOffset);
+            let score = 12 - distance;
 
-            let score = 0;
-            if (inScale) score += 3;
-            if (isStep) score += 2;
-            if (isSmallInterval) score += 1;
-            if (isLargeLeap) score -= 1;
-            if (!inScale) score -= 3;
+            // Boost in-key notes, penalize out-of-key
+            if (inKey) score += 3;
+            else score -= 3;
 
             return { offset: noteOffset, score };
         });
@@ -120,7 +124,6 @@ function updateRankedNotes() {
         noteScores
             .sort((a, b) => b.score - a.score)
             .forEach(({ offset }, i) => $result.appendChild(createNoteButton(offset, i)));
-
     }
 }
 function createNoteButton(note, index) {
